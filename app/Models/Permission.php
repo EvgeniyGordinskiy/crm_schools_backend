@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Permission extends Model
 {
-    //
+    public function permission_type()
+    {
+        return $this->belongsTo(PermissionType::class);
+    }
 }

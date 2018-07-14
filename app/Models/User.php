@@ -49,17 +49,16 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-    public function permissions()
-    {
-        $rolePermissionTable = (new RolePermission)->getTable();
-        $permissionTable = (new Permission)->getTable();
-        $permissionTypeTable = (new PermissionType)->getTable();
-        return $this->role()
-            ->join($rolePermissionTable,"id",'=','role_id')
-            ->join($permissionTable,'permission_id', '=', "$permissionTable.id")
-            ->join($permissionTypeTable,'permission_type_id', '=', "$permissionTypeTable.id");
-    }
-
+//    public function scopePermissions()
+//    {
+//        $rolePermissionTable = (new RolePermission)->getTable();
+//        $permissionTable = (new Permission)->getTable();
+//        $roleTable = (new Role)->getTable();
+//        return $this
+//            ->join($roleTable,"users.role_id",'=', "$roleTable.id")
+//            ->join($rolePermissionTable,"$roleTable.id",'=',"$rolePermissionTable.role_id")
+//            ->join($permissionTable,'permission_id', '=', "$permissionTable.id");
+//    }
     public function role()
     {
         return $this->belongsTo(Role::class);

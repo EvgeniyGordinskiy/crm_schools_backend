@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 
@@ -44,40 +45,50 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\User::class, 5)->create();
-        factory(App\Models\School::class, 5)->create();
-        factory(App\Models\Program::class, 5)->create();
+        foreach ($this->roles as $role) {
+            (new \App\Models\Role(['name' => $role]))->save();
+        }
+        factory(App\Models\User::class, 15)->create();
+        factory(App\Models\School::class, 15)->create();
+        factory(App\Models\Program::class, 15)->create();
         factory(App\Models\SchoolPrograms::class, 5)->create();
         factory(App\Models\Attendance::class, 5)->create();
         factory(App\Models\Schedule::class, 5)->create();
         factory(App\Models\Membership::class, 5)->create();
         factory(App\Models\ProgramMembership::class, 5)->create();
-        foreach ($this->roles as $role) {
-            (new \App\Models\Role(['name' => $role]))->save();
-        }
+
+        $permissionTypeAll = new \App\Models\PermissionType(['name' => 'all']);
+        $permissionTypeAll->save();
+        $superAdmin = \App\Models\User::find(1);
+        $roleSuperAdmin = Role::whereName('super_admin')->first();
+        $superAdmin->role()->associate($roleSuperAdmin);
         foreach ($this->getModels() as $model) {
             $modelR = 'App\Models\\'.ucfirst($model);
             if(new $modelR() instanceof \App\Contracts\HasTypesInterface) {
-                if(isset($this->grantTypes[strtolower($model)])) {
+                if(isset($this->permissionTypes[strtolower($model)])) {
                     foreach ($this->permissionTypes[strtolower($model)] as $grantType) {
                         $tmpModel = new \App\Models\PermissionType(['name' => $grantType]);
                         $tmpModel->save();
                         foreach ($this->events as $event) {
-                            (new \App\Models\Permission([
-                                'grant_type_id' => $tmpModel->id,
+                            $tmpPermission = new \App\Models\Permission([
+                                'permission_type_id' => $tmpModel->id,
                                 'model_name' => $model,
                                 'event' => $event
-                            ]))->save();
+                            ]);
+                            $tmpPermission->save();
+                            $this->saveRolePermissions($superAdmin->id, $tmpPermission->id);
                         }
                     }
                 }
             } else {
                 foreach ($this->events as $event) {
-                    (new \App\Models\Permission([
-                        'grant_type_id' => null,
+                    $tmpPermission = new \App\Models\Permission([
+                        'permission_type_id' => $permissionTypeAll->id,
                         'model_name' => $model,
                         'event' => $event
-                    ]))->save();
+                    ]);
+                    $tmpPermission->save();
+                    $this->saveRolePermissions($superAdmin->id, $tmpPermission->id);
                 }
             }
         }
@@ -97,5 +108,13 @@ class DatabaseSeeder extends Seeder
             }
         }
         return $out;
+    }
+
+    private function saveRolePermissions($userId, $permissionId)
+    {
+        (new \App\Models\RolePermission([
+            'role_id' => $userId,
+            'permission_id' => $permissionId
+            ]))->save();
     }
 }

@@ -19,8 +19,8 @@ class CreatePaymentsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->enum('status', ['SUCCESS', 'FAIL']);
             $table->decimal('amount', 15,2);
-            $table->integer('grant_type_id')->unsigned();
-            $table->foreign('grant_type_id')->references('id')->on('grant_types');
+            $table->integer('permission_type_id')->unsigned();
+            $table->foreign('permission_type_id')->references('id')->on('permission_types');
             $table->timestamps();
         });
     }
@@ -33,7 +33,7 @@ class CreatePaymentsTable extends Migration
     public function down()
     {
         Schema::table('payments', function(Blueprint $table) {
-            $table->dropForeign(['grant_type_id']);
+            $table->dropForeign(['permission_type_id']);
         });
         Schema::dropIfExists('payments');
     }

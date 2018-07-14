@@ -20,8 +20,8 @@ class CreateMessagesTable extends Migration
             $table->foreign('from')->references('id')->on('users');
             $table->integer('to')->unsigned();
             $table->foreign('to')->references('id')->on('users');
-            $table->integer('grant_type_id')->unsigned();
-            $table->foreign('grant_type_id')->references('id')->on('grant_types');
+            $table->integer('permission_type_id')->unsigned();
+            $table->foreign('permission_type_id')->references('id')->on('permission_types');
             $table->timestamps();
         });
     }
@@ -34,7 +34,7 @@ class CreateMessagesTable extends Migration
     public function down()
     {
         Schema::table('messages', function(Blueprint $table) {
-            $table->dropForeign(['grant_type_id']);
+            $table->dropForeign(['permission_type_id']);
             $table->dropForeign(['to']);
             $table->dropForeign(['from']);
         });

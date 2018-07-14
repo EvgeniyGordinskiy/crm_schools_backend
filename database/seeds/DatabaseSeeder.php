@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
       'insert'
     ];
 
-    private $grantTypes = [
+    private $permissionTypes = [
       'message' => [
           'to super admin',
           'to owner',
@@ -32,6 +32,10 @@ class DatabaseSeeder extends Seeder
           'group',
           'special discount'
       ]
+    ];
+
+    private $rolePermissions = [
+
     ];
     /**
      * Run the database seeds.
@@ -47,7 +51,7 @@ class DatabaseSeeder extends Seeder
         factory(App\Models\Attendance::class, 5)->create();
         factory(App\Models\Schedule::class, 5)->create();
         factory(App\Models\Membership::class, 5)->create();
-        factory(App\Models\UserMembership::class, 5)->create();
+        factory(App\Models\ProgramMembership::class, 5)->create();
         foreach ($this->roles as $role) {
             (new \App\Models\Role(['name' => $role]))->save();
         }
@@ -55,11 +59,11 @@ class DatabaseSeeder extends Seeder
             $modelR = 'App\Models\\'.ucfirst($model);
             if(new $modelR() instanceof \App\Contracts\HasTypesInterface) {
                 if(isset($this->grantTypes[strtolower($model)])) {
-                    foreach ($this->grantTypes[strtolower($model)] as $grantType) {
-                        $tmpModel = new \App\Models\GrantType(['name' => $grantType]);
+                    foreach ($this->permissionTypes[strtolower($model)] as $grantType) {
+                        $tmpModel = new \App\Models\PermissionType(['name' => $grantType]);
                         $tmpModel->save();
                         foreach ($this->events as $event) {
-                            (new \App\Models\Grant([
+                            (new \App\Models\Permission([
                                 'grant_type_id' => $tmpModel->id,
                                 'model_name' => $model,
                                 'event' => $event
@@ -69,7 +73,7 @@ class DatabaseSeeder extends Seeder
                 }
             } else {
                 foreach ($this->events as $event) {
-                    (new \App\Models\Grant([
+                    (new \App\Models\Permission([
                         'grant_type_id' => null,
                         'model_name' => $model,
                         'event' => $event

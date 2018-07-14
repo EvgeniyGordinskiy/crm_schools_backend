@@ -57,9 +57,15 @@ $factory->define(App\Models\SchoolPrograms::class, function (Faker $faker) {
 
 // Attendance
 $factory->define(App\Models\Attendance::class, function (Faker $faker) {
+    $programId = getReferenceId('Program');
+    $userId = getReferenceId('User');
+    while (\App\Models\Attendance::whereProgramId($programId)->whereUserId($userId)->first()) {
+        $programId = getReferenceId('Program');
+        $userId = getReferenceId('User');
+    }
     return [
-        'program_id'  =>  getReferenceId('Program'),
-        'user_id' => getReferenceId('User'),
+        'program_id'  =>  $programId,
+        'user_id' => $userId,
         'presenceFlag' => random_int(0, 1),
         'created_at' => $faker->dateTimeBetween('now', '30 days'),
     ];
@@ -84,24 +90,16 @@ $factory->define(App\Models\Membership::class, function (Faker $faker) {
 
 
 // UserMembership
-$factory->define(App\Models\UserMembership::class, function (Faker $faker) {
+$factory->define(App\Models\ProgramMembership::class, function (Faker $faker) {
+    $programId = getReferenceId('Program');
+    $membershipId = getReferenceId('Membership');
+    while (\App\Models\Attendance::whereProgramId($programId)->whereUserId($membershipId)->first()) {
+        $programId = getReferenceId('Program');
+        $membershipId = getReferenceId('Membership');
+    }
     return [
-        'user_id'  =>  getReferenceId('User'),
-        'membership_id' => getReferenceId('Membership')
+        'program_id'  =>  $programId,
+        'membership_id' => $membershipId
     ];
 });
 
-// GrantType
-$factory->define(App\Models\GrantType::class, function (Faker $faker) {
-    return [
-        'name' => $faker->word,
-    ];
-});
-
-// Grant
-$factory->define(App\Models\Grant::class, function (Faker $faker) {
-    return [
-        'grant_type_id'  =>  getReferenceId('GrantType'),
-        'model_name'  => $faker->word,
-    ];
-});

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGrantsTable extends Migration
+class CreatePermissionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateGrantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('grants', function (Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('grant_type_id')->unsigned()->nullable();
-            $table->foreign('grant_type_id')->references('id')->on('grant_types');
+            $table->integer('permission_type_id')->unsigned();
+            $table->foreign('permission_type_id')->references('id')->on('permission_types');
             $table->string('model_name');
             $table->string('event');
             $table->timestamps();
@@ -30,9 +30,9 @@ class CreateGrantsTable extends Migration
      */
     public function down()
     {
-        Schema::table('grants', function(Blueprint $table) {
-            $table->dropForeign(['grant_type_id']);
+        Schema::table('permissions', function(Blueprint $table) {
+            $table->dropForeign('permissions_permission_type_id_foreign');
         });
-        Schema::dropIfExists('grants');
+        Schema::dropIfExists('permissions');
     }
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserMembership extends Model
+class PermissionType extends Model
 {
-    public $timestamps = false;
+    //
 }

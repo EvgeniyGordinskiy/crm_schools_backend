@@ -10,10 +10,6 @@ class AccountController extends Controller
 {
     public function index()
     {
-//        $user =  Request::user()->with(['role' => function ($q){
-//            $q->with('permissions');
-//        }])->first()->toArray();
-//        return $this->respondWithData($user);
         return new UserResource(Request::user());
     }
 }

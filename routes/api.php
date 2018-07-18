@@ -59,6 +59,7 @@ Route::group([
     ], function(){
         Route::get('', ['as' => 'index', 'uses' => 'PermissionController@index']);
         Route::get('roles', ['as' => 'roles.index', 'uses' => 'PermissionController@roles_permissions']);
+        Route::post('', ['as' => 'update', 'uses' => 'PermissionController@update']);
     });
 
     /**

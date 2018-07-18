@@ -8,6 +8,6 @@ class RoleController
 {
     public function index()
     {
-        return RoleResource::collection(Role::all());
+        return RoleResource::collection(Role::where('name', '!=', 'super_admin')->get());
     }
 }

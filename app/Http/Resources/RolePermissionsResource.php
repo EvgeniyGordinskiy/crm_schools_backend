@@ -17,6 +17,7 @@ class RolePermissionsResource extends Resource
         return [
             'role' => $this->role->name,
             'permission_id' => $this->permission_id,
+            'model_name' => $this->permission->model_name
         ];
     }
 }

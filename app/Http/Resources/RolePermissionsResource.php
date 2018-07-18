@@ -18,6 +18,6 @@ class RolePermissionsResource extends Resource
             'role' => $this->role->name,
             'permission_id' => $this->permission_id,
             'model_name' => $this->permission->model_name
-        ];
+        ];  
     }
 }

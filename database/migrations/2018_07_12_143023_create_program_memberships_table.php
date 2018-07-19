@@ -18,7 +18,6 @@ class CreateProgramMembershipsTable extends Migration
             $table->foreign('program_id')->references('id')->on('programs');
             $table->integer('membership_id')->unsigned();
             $table->foreign('membership_id')->references('id')->on('memberships');
-            $table->primary(['program_id', 'membership_id']);
         });
     }
 

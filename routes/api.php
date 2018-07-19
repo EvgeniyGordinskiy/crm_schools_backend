@@ -33,7 +33,7 @@ Route::group([
  */
 
 Route::group([
-    'middleware' => ['jwt.auth'],
+    'middleware' => ['jwt_auth'],
 ], function(){
 
     /**

@@ -62,7 +62,7 @@ class Kernel extends HttpKernel
         /**
          * Custom subscription Middleware...
          */
-        'jwt.auth' => \App\Http\Middleware\VerifyJWTToken::class,
+        'jwt_auth' => \App\Http\Middleware\VerifyJWTToken::class,
 //        'jwt.subscribe' => \App\Http\Middleware\IsSubscribedUser::class,
         /*
          * Package Middleware...

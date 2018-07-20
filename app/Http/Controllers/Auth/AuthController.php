@@ -66,13 +66,13 @@ class AuthController extends Controller
     public function register(RegisterRequest $request,  AuthService $authService)
     {
 
-        $token = $authService->register($request->first_name, $request->last_name, $request->timeZone, $request->email, $request->password);
+        $token = $authService->register($request->name, $request->email, $request->password);
 
         if ( !$token ) {
             return $this->respondUnauthorized('Error while registered user', 403);
         }
 
-        return $this->respond(compact('token'));
+        return $this->respondWithSuccess('Ok');
     }
 
     public function resetPassword(ResetPasswordRequest $request)

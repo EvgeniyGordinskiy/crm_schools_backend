@@ -2,6 +2,7 @@
 
 namespace App\Services\Auth;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -24,27 +25,24 @@ class AuthService
 
     /**
      * Register user
-     * @param $firstName
-     * @param $lastName
-     * @param $timeZone
+     * @param $name
      * @param $email
      * @param $password
      * @return mixed
      */
-    public function register($firstName, $lastName, $timeZone, $email, $password)
+    public function register($name, $email, $password)
     {
+        $roleId = Role::whereName('admin')->first();
         $user = new User(
             [
-                'first_name' => $firstName,
-                'last_name'  => $lastName,
-                'timeZone'   => $timeZone,
-                'email'      => $email,
-                'password'   => $password,
+                'name'      => $name,
+                'email'     => $email,
+                'password'  => $password,
+                'role_id'   => $roleId->id
             ]
         );
         $user->password = bcrypt($user->password);
-
-        $user->token = str_random(30);
+//        $user->token = str_random(30);
 
         $user->save();
 

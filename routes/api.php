@@ -87,4 +87,17 @@ Route::group([
     ], function(){
         Route::post('', ['as' => 'create', 'uses' => 'ProgramController@create']);
     });
+    
+    /**
+     * 
+     *  Routes for school
+     * 
+     */
+
+    Route::group([
+        'prefix' => 'school',
+        'as' => 'school'
+    ], function(){
+        Route::post('', ['as' => 'create', 'uses' => 'SchoolController@create']);
+    });
 });

@@ -38,7 +38,7 @@ class AuthController extends Controller
         if (!$token) {
             return $this->respondUnauthorized('Invalid credentials', 40101);
         }
-        return $this->respond(compact('token'));
+        return $this->respondWithData(['token' => $token]);
     }
 
     /**
@@ -71,7 +71,7 @@ class AuthController extends Controller
             return $this->respondUnauthorized('Error while registered user', 403);
         }
 
-        return $this->respondWithSuccess('Ok');
+        return $this->respondWithData(['token' => $token]);
     }
 
     public function resetPassword(ResetPasswordRequest $request)

@@ -16,6 +16,8 @@ class CreateSchoolsTable extends Migration
         Schema::create('schools', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('description')->default('');
+            $table->string('address')->default('');
             $table->integer('owner')->unsigned();
             $table->foreign('owner')->references('id')->on('users');
             $table->timestamps();

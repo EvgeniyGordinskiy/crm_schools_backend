@@ -16,6 +16,8 @@ class CreateProgramsTable extends Migration
         Schema::create('programs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('description')->default('');
+            $table->enum('program_repeat',['day', 'week', 'month']);
             $table->timestamps();
         });
     }

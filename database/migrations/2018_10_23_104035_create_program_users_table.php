@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAttendancesTable extends Migration
+class CreateProgramUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateAttendancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendances', function (Blueprint $table) {
+        Schema::create('program_users', function (Blueprint $table) {
             $table->integer('program_id')->unsigned();
             $table->foreign('program_id')->references('id')->on('programs');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->tinyInteger('presenceFlag');
-            $table->timestamp('created_at');
         });
     }
 
@@ -30,10 +28,10 @@ class CreateAttendancesTable extends Migration
      */
     public function down()
     {
-        Schema::table('attendances', function(Blueprint $table) {
+        Schema::table('program_users', function (Blueprint $table) {
             $table->dropForeign(['program_id']);
             $table->dropForeign(['user_id']);
         });
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('program_users');
     }
 }

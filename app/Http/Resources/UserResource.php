@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\School;
 use Illuminate\Http\Resources\Json\Resource;
 
 class UserResource extends Resource
@@ -19,6 +20,7 @@ class UserResource extends Resource
             'email' => $this->email,
             'role' => $this->role->name,
             'permissions' => PermissionResource::collection($this->role->permissions),
+            'schools' => SchoolResource::collection(School::whereOwner($this->id)->get()),
         ];
     }
 }

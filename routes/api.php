@@ -74,4 +74,17 @@ Route::group([
     ], function(){
         Route::get('', ['as' => 'index', 'uses' => 'RoleController@index']);
     });
+    
+    /**
+     * 
+     *  Routes for programs
+     * 
+     */
+
+    Route::group([
+        'prefix' => 'program',
+        'as' => 'program'
+    ], function(){
+        Route::post('', ['as' => 'create', 'uses' => 'ProgramController@create']);
+    });
 });

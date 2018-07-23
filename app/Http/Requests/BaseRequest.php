@@ -32,4 +32,9 @@ abstract class BaseRequest extends FormRequest
             $this->forbidden_code
         );
     }
+
+    protected function sanitizeString(string $property_name): string
+    {
+        return filter_var($this->input($property_name) ,FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH);
+    }
 }

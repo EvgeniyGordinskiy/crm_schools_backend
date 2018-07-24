@@ -4,7 +4,7 @@ namespace App\Services\Verification;
 
 use App\Contracts\VerificationHandler;
 use App\Models\User;
-use App\UsersVerification;
+use App\Models\UsersVerification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -63,18 +63,15 @@ class VerificationService
     /**
      * Check token
      * @param $token
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return user.id or false.
      */
     public static function checkToken($token)
     {
-        if(
-            !Cache::has($token)
-            || !UsersVerification::whereUserId(Cache::get($token))->first()
-        ){
-            return redirect(env('APP_FRONT_URL').'/login');
-        }else{
-            return redirect(env('APP_FRONT_URL').'/home');
+        if (Cache::has($token)) {
+            $verification = UsersVerification::whereUserId(Cache::get($token))->first();
+            if($verification->user) return $verification->user;
         }
+        return false;
     }
 
     public static function setPlayload( Array $playload)

@@ -195,10 +195,12 @@ trait Restable
      */
     public function respondWithError(
         $message,
-        int $code,
+        int $code = 500,
         array $headers = []
     ): JsonResponse
     {
+        $this->setStatusCode($code);
+
         return $this->respond(
             [
                 'error' => [

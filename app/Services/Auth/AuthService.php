@@ -4,23 +4,33 @@ namespace App\Services\Auth;
 
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Auth\AuthenticateRequest;
 
 class AuthService
 {
     /**
      *  Authenticate user
-     * @param AuthenticateRequest $request
+     * @param $email string
+     * @param $password string
+     * @param $expiresTime string
      * @return mixed
      */
-    public function authenticate($email, $password)
+    public function authenticate($email, $password, $expiresTime)
     {
-       $token = JWTAuth::attempt(['email' => $email, 'password' => $password]);
+       $token = JWTAuth::attempt(['email' => $email, 'password' => $password], ['exp' => $expiresTime]);
 
        return $token;
+    }
+
+    /**
+     * Authenticate user by users id. 
+     * @param $user
+     * @return mixed
+     */
+    public function authenticateById(User $user)
+    {
+        $token = JWTAuth::fromSubject($user);
+        return $token;
     }
 
     /**

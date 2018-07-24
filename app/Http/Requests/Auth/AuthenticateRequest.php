@@ -32,6 +32,7 @@ class AuthenticateRequest extends BaseRequest
                 'required',
                 'min:3'
             ],
+            'rememberMe' => 'bool'
         ];
     }
 }

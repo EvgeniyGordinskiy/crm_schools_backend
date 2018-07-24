@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\CheckResetTokenRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Models\User;
 use App\Services\Auth\AuthService;
 use App\Services\Verification\VerificationService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\AuthenticateRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class AuthController extends Controller
 {
@@ -33,10 +39,13 @@ class AuthController extends Controller
      */
     public function authenticate(AuthenticateRequest $request, AuthService $authService)
     {
-        $token = $authService->authenticate($request->email, $request->password);
-
+        $expiresTime = Carbon::now()->addHour(1)->timestamp;
+        if($request->has('rememberMe') && $request->get('rememberMe')) {
+            $expiresTime = Carbon::now()->addDays(7)->timestamp;
+        }
+        $token = $authService->authenticate($request->email, $request->password, $expiresTime);
         if (!$token) {
-            return $this->respondUnauthorized('Invalid credentials', 40101);
+            return $this->respondUnauthorized('Invalid credentials', 401);
         }
         return $this->respondWithData(['token' => $token]);
     }
@@ -74,13 +83,30 @@ class AuthController extends Controller
         return $this->respondWithData(['token' => $token]);
     }
 
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $user = User::whereEmail($request->email)->first();
+        if($user) {
+            $status = VerificationService::send($user);
+            if( $status === VerificationService::SUCCESSFULLY_SEND ) return $this->respondWithSuccess('Email successfully sent');
+        }
+
+        return $this->respondWithError('User with this email is not found.', 403);
+
+    }
+
+    public function check_reset_token(CheckResetTokenRequest $request, AuthService $authService) {
+        if($user = VerificationService::checkToken($request->token)) {
+            if($token = $authService->authenticateById($user))  return $this->respondWithData(['token' => $token]);
+        }
+        return $this->respondWithError('Token is expired', 401);
+    }
+    
     public function resetPassword(ResetPasswordRequest $request)
     {
-        VerificationService::setPlayload(['new_password' => bcrypt($request->password)]);
-        $status = VerificationService::send(auth()->user());
+        $user = Request::user();
+        if($user->update(['password' => bcrypt($request->password)])) return $this->respondWithSuccess('Password successfully changed');
+        return $this->respondWithError('Something wrong is happened', 500);
 
-        if( $status === VerificationService::SUCCESSFULLY_SEND ) return $this->respondWithSuccess('Verification email is sent.');
-
-        return $this->respondWithError('Error while password changed.', 403);
     }
 }

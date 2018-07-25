@@ -26,6 +26,7 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
     static $password;
     return [
         'name'           => $faker->name,
+        'phone'           => $faker->phoneNumber,
         'email'          => $faker->unique()->safeEmail,
         'role_id'        => getReferenceId('Role'),
         'password'       => $password ?: $password = bcrypt('secret'),

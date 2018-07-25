@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersVerificationsTable extends Migration
+class CreateEmailConfirmationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateUsersVerificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_verifications', function (Blueprint $table) {
+        Schema::create('email_confirmations', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('token');
-            $table->string('class_name');
-            $table->string('playload');
+            $table->timestamp('verify_at');
             $table->timestamps();
         });
     }
@@ -30,9 +29,10 @@ class CreateUsersVerificationsTable extends Migration
      */
     public function down()
     {
-        Schema::table('users_verification',  function (Blueprint $table) {
+        Schema::table('email_confirmations', function(Blueprint $table){
             $table->dropForeign(['user_id']);
         });
-        Schema::dropIfExists('users_verifications');
+
+        Schema::dropIfExists('email_confirmations');
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\UsersAuthSocial;
+use App\Services\Image\ImageService;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
@@ -72,15 +74,28 @@ class AuthController extends Controller
      *       token: $token
      *     }
      */
-    public function register(RegisterRequest $request,  AuthService $authService)
+    public function register(RegisterRequest $request,  AuthService $authService, ImageService $imageService)
     {
-        $token = $authService->register($request->name, $request->email, $request->password);
+      
 
-        if ( !$token ) {
+        $resp = $authService->register($request->name, $request->email, $request->password, $request->role_name);
+
+        if ( !$resp['token'] || !$resp['user']) {
             return $this->respondUnauthorized('Error while registered user', 403);
         }
 
-        return $this->respondWithData(['token' => $token]);
+        if($request->has('fromSocial')) {
+            $nameAvatar = $request->name.'Avatar';
+            $imageService->createImageFromPath($request->avatar, 'avatars', $nameAvatar);
+            UsersAuthSocial::make([
+                'user_id' => $resp['user']->id,
+                'provider_name' => $request->fromSocial['provider_name'],
+                'provider_id' =>  $request->fromSocial['provader_id'],
+            ]);
+            $resp['user']->update(['avatar' => $imageService->url]);
+        }
+
+        return $this->respondWithData(['token' => $resp['token']]);
     }
 
     public function changePassword(ChangePasswordRequest $request)

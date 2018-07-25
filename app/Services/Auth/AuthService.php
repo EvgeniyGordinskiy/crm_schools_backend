@@ -40,15 +40,15 @@ class AuthService
      * @param $password
      * @return mixed
      */
-    public function register($name, $email, $password)
+    public function register($name, $email, $password, $role_name)
     {
-        $roleId = Role::whereName('admin')->first();
+        $roleId = Role::whereName($role_name)->first();
         $user = new User(
             [
                 'name'      => $name,
                 'email'     => $email,
                 'password'  => $password,
-                'role_id'   => $roleId->id
+                'role_id'   => $roleId->id,
             ]
         );
         $user->password = bcrypt($user->password);
@@ -60,7 +60,7 @@ class AuthService
 
         $token = JWTAuth::attempt($credentials);
 
-        return $token;
+        return ['toke' => $token, 'user' => $user];
     }
 
 }

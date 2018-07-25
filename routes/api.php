@@ -17,7 +17,6 @@ use Illuminate\Http\Request;
 /**
  *  Routes for Authentication
  */
-
 Route::group([
     'prefix' => 'auth',
     'as' => 'auth'
@@ -30,13 +29,23 @@ Route::group([
 });
 
 
+/**
+ *
+ * Routes for social auth.
+ *
+ */
+Route::group([
+    'prefix' => 'social',
+    'as' => 'social'
+], function(){
+    Route::post('{provider}', 'Auth\AuthSocialController@authenticate');
+});
 
 /**
  *
  * Routes for password changing
  *
  */
-
 Route::group([
     'as' => 'password.',
     'prefix' => 'password',
@@ -51,7 +60,6 @@ Route::group([
 /**
  *  Authenticated routes
  */
-
 Route::group([
     'middleware' => ['jwt_auth'],
 ], function(){
@@ -59,7 +67,6 @@ Route::group([
     /**
      *  Routes for users account
      */
-    
     Route::group([
         'prefix' => 'account',
         'as' => 'account'
@@ -72,7 +79,6 @@ Route::group([
      *  Routes for permissions
      *
      */
-
     Route::group([
         'prefix' => 'permissions',
         'as' => 'permissions'
@@ -87,7 +93,6 @@ Route::group([
      *  Routes for oles
      *
      */
-
     Route::group([
         'prefix' => 'roles',
         'as' => 'role'
@@ -100,7 +105,6 @@ Route::group([
      *  Routes for programs
      * 
      */
-
     Route::group([
         'prefix' => 'program',
         'as' => 'program'
@@ -113,7 +117,6 @@ Route::group([
      *  Routes for school
      * 
      */
-
     Route::group([
         'prefix' => 'school',
         'as' => 'school'

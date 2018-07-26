@@ -30,6 +30,7 @@ class RegisterRequest extends BaseRequest
             'password' => 'required|confirmed',
             'fromSocial' => 'array',
             'avatar'    => 'string',
+            'phone'    => 'required|string',
             'role_name' => [
                 'required',
                 Rule::notIn(['super-admin']),

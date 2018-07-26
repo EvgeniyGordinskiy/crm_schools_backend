@@ -40,13 +40,14 @@ class AuthService
      * @param $password
      * @return mixed
      */
-    public function register($name, $email, $password, $role_name)
+    public function register($name, $email, $password, $role_name, $phone)
     {
         $roleId = Role::whereName($role_name)->first();
         $user = new User(
             [
                 'name'      => $name,
                 'email'     => $email,
+                'phone'     => $phone,
                 'password'  => $password,
                 'role_id'   => $roleId->id,
             ]
@@ -60,7 +61,7 @@ class AuthService
 
         $token = JWTAuth::attempt($credentials);
 
-        return ['toke' => $token, 'user' => $user];
+        return ['token' => $token, 'user' => $user];
     }
 
 }

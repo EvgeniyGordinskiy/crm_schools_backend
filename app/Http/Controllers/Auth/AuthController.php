@@ -78,21 +78,21 @@ class AuthController extends Controller
     {
       
 
-        $resp = $authService->register($request->name, $request->email, $request->password, $request->role_name);
+        $resp = $authService->register($request->name, $request->email, $request->password, $request->role_name, $request->phone);
 
         if ( !$resp['token'] || !$resp['user']) {
             return $this->respondUnauthorized('Error while registered user', 403);
         }
 
         if($request->has('fromSocial')) {
-            $nameAvatar = $request->name.'Avatar';
-            $imageService->createImageFromPath($request->avatar, 'avatars', $nameAvatar);
+            $nameAvatar = str_replace(' ', '',$request->name).'Avatar';
+            if($request->avatar) $imageService->createImageFromPath($request->avatar, 'avatars', $nameAvatar);
             UsersAuthSocial::make([
                 'user_id' => $resp['user']->id,
                 'provider_name' => $request->fromSocial['provider_name'],
-                'provider_id' =>  $request->fromSocial['provader_id'],
+                'provider_id' =>  $request->fromSocial['provider_id'],
             ]);
-            $resp['user']->update(['avatar' => $imageService->url]);
+            $resp['user']->update(['avatar' => $imageService->name]);
         }
 
         return $this->respondWithData(['token' => $resp['token']]);

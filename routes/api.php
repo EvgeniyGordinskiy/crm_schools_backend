@@ -57,15 +57,16 @@ Route::group([
 });
 
 /**
- * 
+ *
  * Routes for verifying
- * 
+ *
  */
 Route::group([
     'as' => 'verify.',
     'prefix' => 'verify',
 ], function(){
     Route::post('email', ['as' => 'change', 'uses' => 'VerifyController@verifyEmail']);
+    Route::post('sms', ['as' => 'change', 'uses' => 'VerifyController@verifyPhone']);
 });
 
 /**

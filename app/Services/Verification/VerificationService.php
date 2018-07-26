@@ -51,9 +51,9 @@ class VerificationService
     {
         self::$calledClass = get_called_class();
         self::$currentHandler = $handler ?? new self::$defaultHandler();
-        $token = self::createToken();
+        $token = self::$currentHandler->createToken();
 
-        if(self::saveNewVerification($token, $user) && self::$currentHandler->send($user, $token, app('App\Services\Session\SessionService'))) {
+        if(self::saveNewVerification($token, $user) && self::$currentHandler->send($user, $token)) {
             return self::SUCCESSFULLY_SEND;
         }
 
@@ -77,16 +77,6 @@ class VerificationService
     public static function setPlayload( Array $playload)
     {
         self::$playload = json_encode($playload);
-    }
-
-    /**
-     * Create token
-     * @return string
-     */
-    private static function createToken()
-    {
-        $token = sha1(time());
-        return $token;
     }
 
     /**

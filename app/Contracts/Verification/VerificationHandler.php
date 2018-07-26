@@ -10,8 +10,13 @@ interface VerificationHandler
     /**
      * @param User $user
      * @param String $string
-     * @param SessionService $sessionService
      * @return mixed
      */
-    public function send(User $user, String $string, SessionService $sessionService) ;
+    public function send(User $user, String $string) ;
+
+    /**
+     * Create token
+     * @return string
+     */
+    public function createToken();
 }

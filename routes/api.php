@@ -56,6 +56,17 @@ Route::group([
     Route::post('checkToken', ['as' => 'change', 'uses' => 'Auth\AuthController@check_reset_token']);
 });
 
+/**
+ * 
+ * Routes for verifying
+ * 
+ */
+Route::group([
+    'as' => 'verify.',
+    'prefix' => 'verify',
+], function(){
+    Route::post('email', ['as' => 'change', 'uses' => 'VerifyController@verifyEmail']);
+});
 
 /**
  *  Authenticated routes

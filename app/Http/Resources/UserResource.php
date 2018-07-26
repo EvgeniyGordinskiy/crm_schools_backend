@@ -20,6 +20,9 @@ class UserResource extends Resource
         return [
             'name' => $this->name,
             'email' => $this->email,
+            'emailVerified' => $this->emailVerified,
+            'phoneNumberVerified' => $this->phoneNumberVerified,
+            'registerComplete' => $this->registerComplete,
             'avatar' => $this->avatar ? (string) Image::make(ImageService::getImage(ImageService::$AVATARS_FOLDER, $this->avatar))->encode('data-url') : '',
             'role' => $this->role->name,
             'permissions' => PermissionResource::collection($this->role->permissions),

@@ -53,7 +53,7 @@ class VerificationService
         self::$currentHandler = $handler ?? new self::$defaultHandler();
         $token = self::createToken();
 
-        if(self::saveNewVerification($token, $user) && self::$currentHandler->send($user, $token)) {
+        if(self::saveNewVerification($token, $user) && self::$currentHandler->send($user, $token, app('App\Services\Session\SessionService'))) {
             return self::SUCCESSFULLY_SEND;
         }
 

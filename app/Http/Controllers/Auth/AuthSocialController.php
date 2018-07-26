@@ -25,7 +25,7 @@ class AuthSocialController extends Controller
 
         $token = JWTAuth::fromSubject($user);
 
-        return $this->respond(compact('token'));
+        return $this->respondWithData(compact('token'));
     }
 
     public function findUser($authUser)

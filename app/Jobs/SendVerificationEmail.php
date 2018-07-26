@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Mail\EmailConfirmationsMail;
 use App\Models\User;
+use App\Services\Session\SessionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -18,17 +19,19 @@ class SendVerificationEmail implements ShouldQueue
 
     protected $user;
     protected $token;
+    protected $redirectPath;
 
     /**
-     * Create a new job instance.
-     *
-     * @param  User $user
-     * @param  String $string
+     * SendVerificationEmail constructor.
+     * @param User $user
+     * @param String $string
+     * @param $redirectPath
      */
-    public function __construct(User $user, String $string)
+    public function __construct(User $user, String $string, String $redirectPath)
     {
         $this->user = $user;
         $this->token = $string;
+        $this->redirectPath = $redirectPath;
     }
     /**
      * Execute the job.
@@ -37,6 +40,6 @@ class SendVerificationEmail implements ShouldQueue
      */
     public function handle()
     {
-        Mail::send(new EmailConfirmationsMail($this->user, $this->token));
+        Mail::send(new EmailConfirmationsMail($this->user, $this->token, $this->redirectPath));
     }
 }

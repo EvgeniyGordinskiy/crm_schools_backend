@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\UsersAuthSocial;
 use App\Services\Image\ImageService;
+use App\Services\Session\SessionService;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
@@ -98,12 +99,15 @@ class AuthController extends Controller
         return $this->respondWithData(['token' => $resp['token']]);
     }
 
-    public function changePassword(ChangePasswordRequest $request)
+    public function changePassword(ChangePasswordRequest $request, SessionService $sessionService)
     {
         $user = User::whereEmail($request->email)->first();
         if($user) {
             $status = VerificationService::send($user);
-            if( $status === VerificationService::SUCCESSFULLY_SEND ) return $this->respondWithSuccess('Email successfully sent');
+            if( $status === VerificationService::SUCCESSFULLY_SEND ) {
+                $sessionService->set('redirectPath', $request->redirectPath);
+                return $this->respondWithSuccess('Email successfully sent');
+            }
         }
 
         return $this->respondWithError('User with this email is not found.', 403);

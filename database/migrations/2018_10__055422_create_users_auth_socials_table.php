@@ -16,7 +16,7 @@ class CreateUsersAuthSocialsTable extends Migration
         Schema::create('users_auth_socials', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('provider_name');
             $table->integer('provider_id')->unsigned();
             $table->timestamps();

@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Resources\UserResource;
+use App\Models\EmailConfirmations;
 use App\Models\UsersAuthSocial;
 use App\Services\Image\ImageService;
-use App\Services\Session\SessionService;
 use App\Services\Verification\VerificationService;
-use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\CheckResetTokenRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
 use App\Services\Auth\AuthService;
-use App\Services\Verification\EmailVerificationService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\AuthenticateRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class AuthController extends Controller
@@ -100,13 +98,12 @@ class AuthController extends Controller
         return $this->respondWithData(['token' => $resp['token']]);
     }
 
-    public function changePassword(ChangePasswordRequest $request, SessionService $sessionService)
+    public function changePassword(ChangePasswordRequest $request)
     {
         $user = User::whereEmail($request->email)->first();
         if($user) {
-            $status = VerificationService::send($user);
+            $status = VerificationService::send($user, $request->redirectPath);
             if( $status === VerificationService::SUCCESSFULLY_SEND ) {
-                $sessionService->set('redirectPath', $request->redirectPath);
                 return $this->respondWithSuccess('Email successfully sent');
             }
         }
@@ -117,9 +114,10 @@ class AuthController extends Controller
 
     public function check_reset_token(CheckResetTokenRequest $request, AuthService $authService) {
         if($user = VerificationService::checkToken($request->token)) {
-            if($token = $authService->authenticateById($user))  return $this->respondWithData(['token' => $token]);
+            $token = $authService->authenticateById($user);
+             return $this->respondWithData(['token' => $token ,'authUser' =>  ['data' =>new UserResource($user)]]);
         }
-        return $this->respondWithError('Token is expired', 401);
+        return $this->respondWithError('Token is expired', 422);
     }
     
     public function resetPassword(ResetPasswordRequest $request)

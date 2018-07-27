@@ -111,7 +111,19 @@ Route::group([
     ], function(){
         Route::get('', ['as' => 'index', 'uses' => 'RoleController@index']);
     });
-    
+
+    /**
+     *
+     * Routes for payment
+     *
+     */
+    Route::group([
+        'as' => 'payment.',
+        'prefix' => 'payment',
+    ], function(){
+        Route::post('', ['as' => 'storeSettings', 'uses' => 'PaymentController@storeSettings']);
+    });
+
     /**
      * 
      *  Routes for programs

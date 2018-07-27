@@ -16,12 +16,13 @@ class SmsService
         $status = self::SMS_NOT_SENT;
         try {
             $client = new Client(['auth' => [$accountSid, $authToken]]);
-            $client->post('https://api.twilio.com/2010-04-01/Accounts/'.$accountSid.'/Messages.json',
+            $status = $client->post('https://api.twilio.com/2010-04-01/Accounts/'.$accountSid.'/Messages',
                 ['form_params' => [
                     'Body' => 'CODE: '. $code,
                     'To' => $phone,
                     'From' => $twillioNumber
                 ]]);
+          
             $status = self::SMS_SENT;
         }
         catch (\Exception $e)

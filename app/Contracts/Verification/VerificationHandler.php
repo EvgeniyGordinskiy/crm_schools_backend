@@ -10,13 +10,21 @@ interface VerificationHandler
     /**
      * @param User $user
      * @param String $string
+     * @param $params
      * @return mixed
      */
-    public function send(User $user, String $string) ;
+    public function send(User $user, String $string, $params) ;
 
     /**
      * Create token
      * @return string
      */
     public function createToken();
+
+    /**
+     * Confirm user
+     * @param User $user
+     * @return mixed
+     */
+    public function confirm(User &$user);
 }

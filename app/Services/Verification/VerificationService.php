@@ -6,9 +6,7 @@ use App\Contracts\VerificationHandler;
 use App\Models\User;
 use App\Models\UsersVerification;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Request;
 
 class VerificationService
 {
@@ -47,13 +45,13 @@ class VerificationService
     const SUCCESSFULLY_SEND = 1;
     const ERROR_WHILE_SEND = 0;
 
-    public static function send(User $user, VerificationHandler $handler = null)
+    public static function send(User $user, VerificationHandler $handler = null, $redirectPath = '')
     {
         self::$calledClass = get_called_class();
         self::$currentHandler = $handler ?? new self::$defaultHandler();
         $token = self::$currentHandler->createToken();
 
-        if(self::saveNewVerification($token, $user) && self::$currentHandler->send($user, $token)) {
+        if(self::saveNewVerification($token, $user) && self::$currentHandler->send($user, $token, $redirectPath)) {
             return self::SUCCESSFULLY_SEND;
         }
 
@@ -68,8 +66,12 @@ class VerificationService
     public static function checkToken($token)
     {
         if (Cache::has($token)) {
-            $verification = UsersVerification::whereUserId(Cache::get($token))->first();
-            if($verification->user) return $verification->user;
+            $verification = UsersVerification::whereToken($token)->whereUserId(Cache::get($token))->first();
+            if($user = $verification->user) {
+                $currentHandler = app($verification->class_name);
+                $currentHandler->confirm($user);
+                return $user;
+            }
         }
         return false;
     }
@@ -89,11 +91,11 @@ class VerificationService
         $expiresAt = Carbon::now()
             ->addMinutes(self::$expiration_time);
         Cache::put($token, $user->id, $expiresAt);
-        UsersVerification::whereUserId($user->id)->whereClassName(self::$calledClass)->delete();
+        UsersVerification::whereUserId($user->id)->whereClassName(get_class(self::$currentHandler))->delete();
         $verification = new UsersVerification([
             'user_id'    => $user->id,
             'token'      => $token,
-            'class_name' => self::$calledClass,
+            'class_name' => get_class(self::$currentHandler),
             'playload'   => self::$playload,
         ]);
        return (boolean) $verification->save();

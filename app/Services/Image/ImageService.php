@@ -35,9 +35,10 @@ class ImageService
     public function check_image_with_the_same_name($name, $ext)
     {
         $countNames = 0;
-        while(Storage::disk('public')->has($this->path.'/'.$name.'.'.$ext)) {
+        $tmpName = $name;
+        while(Storage::disk('public')->has($this->path.'/'.$tmpName.'.'.$ext)) {
             $countNames++;
-            $name .= $countNames;
+            $tmpName = $name.$countNames;
         }
             return $name;
     }

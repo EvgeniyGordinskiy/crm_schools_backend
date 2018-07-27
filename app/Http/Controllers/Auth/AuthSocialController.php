@@ -20,7 +20,7 @@ class AuthSocialController extends Controller
         $user = $this->findUser($authUser);
         if(!$user) {
             $this->setStatusCode(206);
-            return $this->respondWithData(['authUser' => $authUser,'status' => 206]);
+            return $this->respondWithData(['authUser' => ['data' => $authUser],'status' => 206]);
         }
 
         $token = JWTAuth::fromSubject($user);

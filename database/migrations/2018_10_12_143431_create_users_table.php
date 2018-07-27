@@ -20,6 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->integer('role_id')->unsigned();
             $table->foreign('role_id')->references('id')->on('roles');
+            $table->integer('payment_settings_id')->unsigned()->nullable();
+            $table->foreign('payment_settings_id')->references('id')->on('payment_settings');
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->tinyInteger('registrationComplete')->default(0);
@@ -39,6 +41,7 @@ class CreateUsersTable extends Migration
     {
         Schema::table('users', function(Blueprint $table) {
             $table->dropForeign(['role_id']);
+            $table->dropForeign(['payment_settings_id']);
         });
         Schema::dropIfExists('users');
     }

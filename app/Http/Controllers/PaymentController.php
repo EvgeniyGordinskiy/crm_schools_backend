@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Payment\StorePaymentSettingsRequest;
 use App\Models\PaymentSetting;
 use App\Http\Resources\UserResource;
+use App\Services\Auth\AuthService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
 class PaymentController extends Controller
 {
-    public function storeSettings(StorePaymentSettingsRequest $request)
+    public function storeSettings(StorePaymentSettingsRequest $request, AuthService $authService)
     {
         $user = Request::user();
         if (!$user->paymentSettings) {
@@ -29,7 +30,7 @@ class PaymentController extends Controller
                 'verified' => 1,
             ]);
         }
-
-        return new UserResource($user);
+        $token = $authService->authenticateById($user);
+        return $this->respondWithData(['token' => $token ,'authUser' =>  ['data' =>new UserResource($user)]]);
     }
 }

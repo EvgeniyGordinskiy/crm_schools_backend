@@ -14,7 +14,7 @@ class VerificationService
      * Life time token
      * @var int
      */
-    private static $expiration_time = 5;
+    private static $expiration_time = 500;
 
     /**
      * Default verification handler

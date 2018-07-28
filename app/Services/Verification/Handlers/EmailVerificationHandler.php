@@ -35,6 +35,6 @@ class EmailVerificationHandler implements VerificationHandler
     {
         EmailConfirmations::whereUserId($user->id)->delete();
         (new EmailConfirmations(['user_id' => $user->id]))->save();
-        $user->update(['emailVerified   ' => 1]);
+        $user->update(['emailVerified' => 1]);
     }
 }

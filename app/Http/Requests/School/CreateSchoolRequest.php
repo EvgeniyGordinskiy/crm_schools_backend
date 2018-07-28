@@ -20,8 +20,8 @@ class CreateSchoolRequest extends BaseRequest
     {
         $this->replace([
             'name' => $this->sanitizeString('name'),
-            'description' => $this->sanitizeString('description'),
-            'address' => $this->sanitizeString('address')
+            'address' => $this->sanitizeString('address'),
+            'phone' => $this->input('phone')
         ]);
     }
 
@@ -34,8 +34,8 @@ class CreateSchoolRequest extends BaseRequest
     {
         return [
             'name' => 'required|string',
-            'description' => 'string',
-            'address' => 'string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
         ];
     }
 }

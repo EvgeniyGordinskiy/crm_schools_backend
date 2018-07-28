@@ -24,7 +24,7 @@ class UserResource extends Resource
             'emailVerified' => (bool) $this->emailVerified,
             'phoneNumberVerified' => (bool) $this->phoneNumberVerified,
             'registerComplete' => (bool) $this->registerComplete,
-            'paymentSettingVerified' => $this->paymentSettings ? (bool) $this->paymentSettings->verified : false,
+            'paymentSettingVerified' => isset($this->paymentSettings) ? (bool) $this->paymentSettings->verified : false,
             'avatar' => $this->avatar ? (string) Image::make(ImageService::getImage(ImageService::$AVATARS_FOLDER, $this->avatar))->encode('data-url') : '',
             'role' => $this->role->name,
             'permissions' => PermissionResource::collection($this->role->permissions),

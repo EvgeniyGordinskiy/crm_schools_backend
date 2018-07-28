@@ -16,10 +16,10 @@ class CreateMessagesTable extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('id');
             $table->text('body');
-            $table->integer('from')->unsigned();
-            $table->foreign('from')->references('id')->on('users');
-            $table->integer('to')->unsigned();
-            $table->foreign('to')->references('id')->on('users');
+            $table->integer('from')->unsigned()->nullable();
+            $table->foreign('from')->references('id')->on('users')->onDelete('set null');
+            $table->integer('to')->unsigned()->nullable();
+            $table->foreign('to')->references('id')->on('users')->onDelete('set null');
             $table->integer('permission_type_id')->unsigned();
             $table->foreign('permission_type_id')->references('id')->on('permission_types');
             $table->timestamps();

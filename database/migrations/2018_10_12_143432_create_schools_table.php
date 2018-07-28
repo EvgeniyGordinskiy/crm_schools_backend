@@ -18,8 +18,9 @@ class CreateSchoolsTable extends Migration
             $table->string('name');
             $table->string('description')->default('');
             $table->string('address')->default('');
+            $table->string('phone')->default('');
             $table->integer('owner')->unsigned();
-            $table->foreign('owner')->references('id')->on('users');
+            $table->foreign('owner')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

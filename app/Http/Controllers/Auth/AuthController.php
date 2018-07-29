@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use App\Models\EmailConfirmations;
 use App\Models\UsersAuthSocial;
 use App\Services\Image\ImageService;
+use App\Services\Verification\Handlers\EmailVerificationHandler;
 use App\Services\Verification\VerificationService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
@@ -98,11 +99,11 @@ class AuthController extends Controller
         return $this->respondWithData(['token' => $resp['token']]);
     }
 
-    public function changePassword(ChangePasswordRequest $request)
+    public function changePassword(ChangePasswordRequest $request, EmailVerificationHandler $handler)
     {
         $user = User::whereEmail($request->email)->first();
         if($user) {
-            $status = VerificationService::send($user, $request->redirectPath);
+            $status = VerificationService::send($user, $handler, $request->redirectPath);
             if( $status === VerificationService::SUCCESSFULLY_SEND ) {
                 return $this->respondWithSuccess('Email successfully sent');
             }

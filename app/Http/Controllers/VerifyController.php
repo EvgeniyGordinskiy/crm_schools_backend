@@ -14,7 +14,7 @@ class VerifyController extends Controller
     {
         $user = User::whereEmail($request->email)->first();
         if($user) {
-            $status = VerificationService::send($user, $handler,$request->redirectPath);
+            $status = VerificationService::send($user, $handler, $request->redirectPath);
             if( $status === VerificationService::SUCCESSFULLY_SEND ) {
                 return $this->respondWithSuccess('Email successfully sent');
             }

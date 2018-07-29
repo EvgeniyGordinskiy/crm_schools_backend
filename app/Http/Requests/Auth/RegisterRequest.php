@@ -29,7 +29,7 @@ class RegisterRequest extends BaseRequest
             'email' => 'unique:users|required|email',
             'password' => 'required|confirmed',
             'fromSocial' => 'array',
-            'avatar'    => 'string',
+            'avatar'    => 'nullable|string',
             'phone'    => 'required|string',
             'role_name' => [
                 'required',
